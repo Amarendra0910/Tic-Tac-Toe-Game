@@ -69,5 +69,4 @@ restart.addEventListener('click', () => {
     document.getElementById('winMes').textContent = "";
     board.removeEventListener('click', printer);
     board.addEventListener('click', printer);
-
 })
