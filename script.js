@@ -1,13 +1,14 @@
 
 let turn = 'O';
+let total_turn = 0;
 
 let winner = [
-    [1, 2, 3], [4, 5, 6], [6, 7, 8],
-    [1, 4, 7], [2, 5, 8], [3, 6, 9],
-    [1, 5, 9], [3, 5, 7]
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
 ]
 
-const board_array = new Array(9).fill("E");
+let board_array = new Array(9).fill("E");
 
 function checkWinner() {
     for (let [index0, index1, index2] of winner) {
@@ -17,24 +18,56 @@ function checkWinner() {
 }
 
 // to print
-const board = document.querySelector('.board');
-board.addEventListener('click', (e) => {
-
+const printer = (e) => {
     const element = e.target;
-    if (turn == 'O') {
-        element.textContent = "O";
-        board_array[element.id] = "O";
-        if (checkWinner()) {
-            document.getElementById('winMes').textContent = "Winner is O"
+    if (board_array[element.id] == "E") {
+
+        total_turn++;
+        if (turn == 'O') {
+            element.textContent = "O";
+            board_array[element.id] = "O";
+            if (checkWinner()) {
+                document.getElementById('winMes').textContent = "Winner is O";
+                board.removeEventListener('click', printer);
+                return;
+            }
+            turn = "X";
         }
-        turn = "X";
-    }
-    else {
-        element.textContent = "X";
-        board_array[element.id] = "1";
-        if (checkWinner()) {
-            document.getElementById('winMes').textContent = "Winner is X"
+
+        else {
+            element.textContent = "X";
+            board_array[element.id] = "X";
+            if (checkWinner()) {
+                document.getElementById('winMes').textContent = "Winner is X";
+                board.removeEventListener('click', printer);
+                return;
+            }
+            turn = "O";
         }
-        turn = "O";
+
+        if (total_turn == 9) {
+            document.getElementById('winMes').textContent = "Match is draw";
+        }
     }
+}
+
+const board = document.querySelector('.board');
+board.addEventListener('click', printer);
+
+const restart = document.getElementById("restartBtn");
+
+restart.addEventListener('click', () => {
+    const box = document.getElementsByClassName("box");
+
+    Array.from(box).forEach((value) => {
+        value.textContent = "";
+    })
+
+    turn = "O";
+    total_turn = 0;
+    board_array = new Array(9).fill("E");
+    document.getElementById('winMes').textContent = "";
+    board.removeEventListener('click', printer);
+    board.addEventListener('click', printer);
+
 })
